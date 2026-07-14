@@ -1,13 +1,15 @@
-FROM ubuntu:22.04
+FROM alpine:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
+RUN apk add --no-cache curl unzip
 
-WORKDIR /app
+RUN mkdir -p /usr/local/xray
 
-COPY . .
+WORKDIR /usr/local/xray
 
-RUN chmod +x start.sh
+RUN curl -L https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip \
+    && unzip xray.zip \
+    && chmod +x xray
 
-EXPOSE 8080
+COPY config.json .
 
-CMD ["./start.sh"]
+CMD ["./xray", "-config", "config.json"]
